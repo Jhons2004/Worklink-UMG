@@ -39,10 +39,8 @@ export default function EmployerDashboard() {
     description: '' 
   });
 
-  // Estado auxiliar para mover el pin virtual del mapa interactivo
   const [mapPin, setMapPin] = useState({ x: 50, y: 50 });
 
-  // Sincronización con el perfil compartido del alumno
   useEffect(() => {
     const savedStudentData = localStorage.getItem('umg_shared_student_profile');
     if (savedStudentData) {
@@ -51,7 +49,6 @@ export default function EmployerDashboard() {
     }
   }, [activeTab]);
 
-  // Capturador de clics en el mapa interactivo simulado
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -75,11 +72,7 @@ export default function EmployerDashboard() {
       detectedLocation = "Villa Nueva / Carretera al Pacífico";
     }
 
-    setFormPlaza(prev => ({
-      ...prev,
-      location: detectedLocation,
-      coords: `${lat}, ${lng}`
-    }));
+    setFormPlaza(prev => ({ ...prev, location: detectedLocation, coords: `${lat}, ${lng}` }));
   };
 
   const handleCreatePlaza = (e: React.FormEvent) => {
@@ -108,7 +101,6 @@ export default function EmployerDashboard() {
     const matchesNombre = est.name.toLowerCase().includes(searchName.toLowerCase());
     const matchesCarrera = est.career.toLowerCase().includes(searchCareer.toLowerCase());
     const matchesUbicacion = filterLocation === '' || est.location.toLowerCase().includes(filterLocation.toLowerCase());
-
     return matchesNombre && matchesCarrera && matchesUbicacion;
   });
 
@@ -120,7 +112,7 @@ export default function EmployerDashboard() {
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-700 font-sans">
       
-      {/* SIDEBAR CORPORATIVO (MANTIENE EMPRESA AUTENTICADA) */}
+      {/* SIDEBAR CORPORATIVO */}
       <aside className="w-full md:w-64 bg-[#003057] text-white flex flex-col p-6 z-20 shadow-xl md:sticky md:top-0 md:h-screen">
         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
           <Image src="/logoumg.png" alt="Logo UMG" width={45} height={45} className="object-contain" />
@@ -146,7 +138,7 @@ export default function EmployerDashboard() {
       {/* ÁREA DE CONTENIDO CENTRAL */}
       <section className="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full overflow-y-auto">
         
-        {/* PESTAÑA 1: BANCO DE TALENTOS (MUESTRA DESCRIPCIÓN Y GESTIÓN DE CV) */}
+        {/* PESTAÑA 1: BANCO DE TALENTOS */}
         {activeTab === 'aspirantes' && (
           <div className="space-y-6">
             <div>
@@ -174,7 +166,6 @@ export default function EmployerDashboard() {
               </div>
             </div>
 
-            {/* LISTADO DE TARJETAS DE ALUMNOS */}
             <div className="space-y-4">
               {estudiantesFiltrados.map(est => (
                 <div key={est.id} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4 transition-all hover:shadow-md">
@@ -189,13 +180,11 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
 
-                  {/* DESCRIPCIÓN DEL ESTUDIANTE AÑADIDA DESDE SU VISTA */}
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-1">Sobre el estudiante:</p>
                     <p className="text-sm text-slate-600 font-medium italic">"{est.biography || 'El alumno no ha redactado una descripción de perfil todavía.'}"</p>
                   </div>
 
-                  {/* SECCIÓN INTERACTIVA DEL CV (VER Y DESCARGAR) */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs font-bold">
                     <div className="flex items-center gap-2 text-slate-400">
                       <span className="text-lg">📄</span>
@@ -203,28 +192,12 @@ export default function EmployerDashboard() {
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      {/* Visualizar Currículum */}
-                      <button 
-                        onClick={() => alert(`[Visualizador de Documentos WorkLink]\n\nAriendo vista previa en línea para: ${est.cvName}\n\n- Perfil Académico Verificado por UMG.\n- Historial de cursos aprobado.`)} 
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#003057] rounded-xl transition-all active:scale-95"
-                      >
-                        👁️ Ver CV
-                      </button>
-                      
-                      {/* Descargar Currículum */}
-                      <button 
-                        onClick={() => alert(`[Descarga Iniciada]\n\nSe ha descargado el archivo "${est.cvName}" de forma local en tu computadora.`)}
-                        className="px-4 py-2 bg-[#003057] hover:bg-[#00223f] text-white rounded-xl shadow-sm transition-all active:scale-95"
-                      >
-                        📥 Descargar CV
-                      </button>
+                      <button onClick={() => alert(`[Visualizador de Documentos]\nAriendo vista previa en línea para: ${est.cvName}`)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#003057] rounded-xl transition-all active:scale-95">👁️ Ver CV</button>
+                      <button onClick={() => alert(`[Descarga Iniciada]\nSe ha descargado el archivo "${est.cvName}".`)} className="px-4 py-2 bg-[#003057] hover:bg-[#00223f] text-white rounded-xl shadow-sm transition-all active:scale-95">📥 Descargar CV</button>
                     </div>
                   </div>
                 </div>
               ))}
-              {estudiantesFiltrados.length === 0 && (
-                <p className="text-center text-sm font-bold text-slate-400 py-12 bg-white rounded-2xl border border-slate-200 shadow-sm">No se encontraron estudiantes que coincidan con los criterios de búsqueda.</p>
-              )}
             </div>
           </div>
         )}
@@ -233,26 +206,15 @@ export default function EmployerDashboard() {
         {activeTab === 'publicar' && (
           <div className="max-w-2xl bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/60">
             <h2 className="text-2xl font-black text-[#003057] mb-2">Publicar Nueva Vacante</h2>
-            <p className="text-xs text-slate-400 uppercase font-black tracking-wider mb-6">Completa los datos y marca el punto exacto en el mapa de abajo</p>
-            
             <form onSubmit={handleCreatePlaza} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Título de la Plaza</label>
-                <input 
-                  type="text" required placeholder="ej. Desarrollador Front-End..." value={formPlaza.title}
-                  onChange={(e) => setFormPlaza({ ...formPlaza, title: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium"
-                />
+                <input type="text" required placeholder="ej. Desarrollador Front-End..." value={formPlaza.title} onChange={(e) => setFormPlaza({ ...formPlaza, title: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" />
               </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Presupuesto Salarial (Q)</label>
-                  <input 
-                    type="number" required placeholder="ej. 8500" value={formPlaza.salary}
-                    onChange={(e) => setFormPlaza({ ...formPlaza, salary: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium"
-                  />
+                  <input type="number" required placeholder="ej. 8500" value={formPlaza.salary} onChange={(e) => setFormPlaza({ ...formPlaza, salary: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Modalidad</label>
@@ -264,46 +226,16 @@ export default function EmployerDashboard() {
                 </div>
               </div>
 
-              {/* MAPA INTERACTIVO */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  🗺️ Ubicación Geográfica (Haz clic en el mapa para marcar el punto)
-                </label>
-                
-                <div 
-                  onClick={handleMapClick}
-                  className="w-full h-48 bg-sky-100 rounded-2xl border border-slate-300 relative overflow-hidden cursor-crosshair shadow-inner group transition-all"
-                  style={{ backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '16px 16px' }}
-                >
-                  <div className="absolute inset-x-0 top-1/2 h-1 bg-white/60"></div>
-                  <div className="absolute inset-y-0 left-1/3 w-1 bg-white/60"></div>
-                  <div className="absolute top-12 left-12 w-24 h-24 bg-green-200/50 rounded-full blur-xl"></div>
-                  <div className="absolute bottom-6 right-16 w-32 h-20 bg-emerald-200/40 rounded-xl"></div>
-
-                  <span className="absolute top-3 right-3 bg-[#003057]/90 text-white font-bold text-[10px] px-2 py-1 rounded-md z-10">
-                    Click para geolocalizar pin
-                  </span>
-
-                  <div 
-                    className="absolute transition-all duration-300 ease-out z-20 flex flex-col items-center"
-                    style={{ left: `${mapPin.x}%`, top: `${mapPin.y}%`, transform: 'translate(-50%, -100%)' }}
-                  >
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">🗺️ Ubicación Geográfica</label>
+                <div onClick={handleMapClick} className="w-full h-48 bg-sky-100 rounded-2xl border border-slate-300 relative overflow-hidden cursor-crosshair shadow-inner" style={{ backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '16px 16px' }}>
+                  <div className="absolute transition-all duration-300 ease-out z-20 flex flex-col items-center" style={{ left: `${mapPin.x}%`, top: `${mapPin.y}%`, transform: 'translate(-50%, -100%)' }}>
                     <span className="text-3xl filter drop-shadow-md animate-bounce">📍</span>
-                    <div className="bg-slate-900 text-white font-bold text-[9px] px-1.5 py-0.5 rounded shadow whitespace-nowrap -mt-1">
-                      ¡Tu Vacante Aquí!
-                    </div>
                   </div>
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase">Referencia de Zona Detectada</label>
-                    <input type="text" readOnly value={formPlaza.location} className="w-full px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-[#003057]" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase">Coordenadas del Sistema (Lat, Lng)</label>
-                    <input type="text" readOnly value={formPlaza.coords} className="w-full px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-mono text-slate-500" />
-                  </div>
+                  <input type="text" readOnly value={formPlaza.location} className="w-full px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-[#003057]" />
+                  <input type="text" readOnly value={formPlaza.coords} className="w-full px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-mono text-slate-500" />
                 </div>
               </div>
 
@@ -311,59 +243,41 @@ export default function EmployerDashboard() {
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Descripción del Trabajo</label>
                 <textarea rows={3} required placeholder="Describe las responsabilidades..." value={formPlaza.description} onChange={(e) => setFormPlaza({ ...formPlaza, description: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium resize-none" />
               </div>
-
-              <div className="pt-2">
-                <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-[0.97]">
-                  🚀 Lanzar Vacante en la Red UMG
-                </button>
-              </div>
+              <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-[0.97]">🚀 Lanzar Vacante en la Red UMG</button>
             </form>
           </div>
         )}
 
-        {/* PESTAÑA 3: MIS PUBLICACIONES */}
+        {/* PESTAÑA 3: MIS PUBLICACIONES (CON LOS NUEVOS BOTONES DE ACCIÓN PARA POSTULANTES) */}
         {activeTab === 'mis-plazas' && (
           <div className="space-y-6">
             <div>
               <h2 className="text-3xl font-black text-[#003057]">Control de Ofertas Publicadas</h2>
-              <p className="text-sm text-slate-500">
-                Plazas activas creadas por <span className="font-extrabold text-[#003057]">Corporación Multi-TI S.A.</span>. Selecciona cualquier vacante para inspeccionar los alumnos postulados.
-              </p>
+              <p className="text-sm text-slate-500">Plazas activas creadas por <span className="font-extrabold text-[#003057]">Corporación Multi-TI S.A.</span>.</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {plazas.map(plaza => (
-                <div 
-                  key={plaza.id} onClick={() => setSelectedPlazaId(plaza.id)}
-                  className={`p-5 rounded-2xl border transition-all cursor-pointer relative active:scale-[0.99] ${selectedPlazaId === plaza.id ? 'bg-red-50 border-red-400 shadow-md ring-1 ring-red-400' : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'}`}
-                >
+                <div key={plaza.id} onClick={() => setSelectedPlazaId(plaza.id)} className={`p-5 rounded-2xl border transition-all cursor-pointer relative active:scale-[0.99] ${selectedPlazaId === plaza.id ? 'bg-red-50 border-red-400 shadow-md ring-1 ring-red-400' : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'}`}>
                   <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md">{plaza.id}</span>
                   <h3 className="text-lg font-bold text-[#003057] mt-1.5">{plaza.title}</h3>
                   <p className="text-xs font-bold text-red-600 mb-1">Oferta: {plaza.salary} | Modo: {plaza.type}</p>
-                  
-                  <p className="text-xs font-bold text-slate-400 mb-2">
-                    📍 Mapa: <span className="text-[#003057]">{plaza.location}</span> <span className="text-[10px] text-slate-400 font-mono">({plaza.coords || 'Sin coordenadas'})</span>
-                  </p>
-                  
-                  <p className="text-xs text-slate-500 line-clamp-2 mt-1 mb-3 bg-slate-50 p-2 rounded-lg border border-slate-100">{plaza.description}</p>
-                  
+                  <p className="text-xs font-bold text-slate-400 mb-2">📍 Mapa: <span className="text-[#003057]">{plaza.location}</span></p>
                   <div className="flex justify-between items-center border-t border-slate-100 pt-2">
                     <span className="text-xs font-bold text-slate-400">👥 {plaza.applicantsIds.length} postulados</span>
-                    <button className={`text-xs font-black px-3 py-1.5 rounded-lg transition-all ${selectedPlazaId === plaza.id ? 'bg-red-600 text-white shadow-sm' : 'bg-slate-100 text-[#003057]'}`}>
-                      {selectedPlazaId === plaza.id ? 'Viendo' : 'Ver Lista →'}
-                    </button>
+                    <button className={`text-xs font-black px-3 py-1.5 rounded-lg transition-all ${selectedPlazaId === plaza.id ? 'bg-red-600 text-white shadow-sm' : 'bg-slate-100 text-[#003057]'}`}>{selectedPlazaId === plaza.id ? 'Viendo' : 'Ver Lista →'}</button>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* SECCIÓN DETALLE DE POSTULANTES */}
+            {/* SECCIÓN DETALLE: BOTONES NUEVOS AGREGADOS "VER CV" Y "ACEPTAR" */}
             {selectedPlazaId && (
-              <div className="bg-white p-6 rounded-2xl shadow-sm border-2 border-red-100 mt-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border-2 border-red-100 mt-6 animate-fadeIn">
                 <div className="border-b border-slate-100 pb-4 mb-4 flex justify-between items-center">
                   <div>
-                    <h4 className="text-lg font-black text-[#003057]">Postulados para: <span className="text-red-600">{plazaSeleccionada?.title}</span></h4>
-                    <p className="text-xs text-slate-400 font-medium">Ubicación de esta plaza: {plazaSeleccionada?.location}</p>
+                    <h4 className="text-lg font-black text-[#003057]">Postulantes para: <span className="text-red-600">{plazaSeleccionada?.title}</span></h4>
+                    <p className="text-xs text-slate-400 font-medium">Gestiona y evalúa los perfiles académicos adjuntos.</p>
                   </div>
                   <button onClick={() => setSelectedPlazaId(null)} className="text-xs font-bold text-slate-400 hover:text-slate-600">✕ Cerrar</button>
                 </div>
@@ -371,13 +285,31 @@ export default function EmployerDashboard() {
                 <div className="space-y-3">
                   {postulantesEspecificos.length > 0 ? (
                     postulantesEspecificos.map(postulante => (
-                      <div key={postulante.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                      <div key={postulante.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
                           <p className="font-extrabold text-[#003057] text-sm">{postulante.name}</p>
                           <p className="text-xs font-bold text-red-600">{postulante.career}</p>
-                          <p className="text-xs text-slate-400 mt-1">📞 Contacto: {postulante.phone} | Residencia: {postulante.location}</p>
+                          <p className="text-xs text-slate-400 mt-1">📍 Residencia: {postulante.location} | Tel: {postulante.phone}</p>
                         </div>
-                        <button onClick={() => alert(`Analizando perfil de ${postulante.name}`)} className="px-4 py-1.5 bg-[#003057] text-white font-bold text-xs rounded-lg active:scale-95 transition-all">Analizar Perfil</button>
+                        
+                        {/* REQUERIMIENTO: BOTONES INTERACTIVOS SIN ALTERAR EL FLUJO */}
+                        <div className="flex items-center gap-2 border-t sm:border-0 pt-2 sm:pt-0 justify-end">
+                          {/* Ver CV del alumno */}
+                          <button 
+                            onClick={() => alert(`[WorkLink UMG - Visor PDF]\n\nAriendo visor del archivo adjunto:\n📁 ${postulante.cvName}\n\nConectado al buzón de almacenamiento institucional.`)} 
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#003057] font-bold text-xs rounded-lg active:scale-95 transition-all shadow-sm border border-slate-200"
+                          >
+                            👁️ Ver CV
+                          </button>
+
+                          {/* Aceptar al alumno en la plaza */}
+                          <button 
+                            onClick={() => alert(`¡Felicitaciones!\n\nHas ACEPTADO formalmente al estudiante "${postulante.name}" para la vacante "${plazaSeleccionada?.title}".\n\nSe enviará una alerta automática a su Portal de Estudiante.`)} 
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-lg active:scale-95 transition-all shadow-md"
+                          >
+                            ✅ Aceptar Postulante
+                          </button>
+                        </div>
                       </div>
                     ))
                   ) : (
